@@ -3,6 +3,9 @@ import ColorContainer from "./colorContainer";
 
 const Counter = () => {
   const [count, setCount] = useState(25 * 60);
+  const [running, setRunning] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
+
   const decrement = () => {
     setCount((prevcount) => {
       if (prevcount > 0) {
@@ -10,21 +13,29 @@ const Counter = () => {
       } else {
         return 0
       }});
+  };
+
+  const start = () => {
+    if (!running) {
+      const id = setInterval(decrement, 1000);
+      setIntervalId(id);
+      setRunning(true);
     }
+  };
 
   const pause = () => {
-    setCount(0);
+    if (running) {
+      clearInterval(intervalId);
+      setRunning(false);
+    }
   };
 
-  const timeCount = () => {
-    
-    setInterval(decrement,1000);
-  };
   return (
-        <ColorContainer count={count} setCount={setCount}> 
+    <ColorContainer count={count} setCount={setCount}> 
       <h1>{Math.floor(count / 60)}:{(count % 60).toString().padStart(2, '0')}</h1>
-      <button onClick={timeCount}>Start counting</button>
-       </ColorContainer>
+      <button style={{marginRight: '10px'}}onClick={start}>Start</button>
+      <button style={{marginLeft: '10px'}}onClick={pause}>Pause</button>
+    </ColorContainer>
   );
 };
 
