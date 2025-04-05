@@ -1,56 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import ColorContainer from "./colorContainer";
 
 const Counter = () => {
-  const [seconds, setSeconds] = useState(25 * 60); // Initialize with 25 minutes in seconds
-  const [isCounting, setIsCounting] = useState(false);
-  const [buttonColor, setButtonColor] = useState("blue"); // Default button color
-
-  useEffect(() => {
-    let interval;
-    if (isCounting && seconds > 0) {
-      interval = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds - 1); // Decrement seconds
-      }, 1000);
-      setButtonColor("red"); // Change button color while counting
-    } else {
-      clearInterval(interval);
-      setButtonColor("blue"); // Reset button color when stopped
+  const [count, setCount] = useState(25 * 60);
+  const decrement = () => {
+    setCount((prevcount) => {
+      if (prevcount > 0) {
+        return prevcount - 1;
+      } else {
+        return 0
+      }});
     }
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [isCounting, seconds]);
-
-  const startCountdown = () => {
-    setIsCounting(true);
+  const pause = () => {
+    setCount(0);
   };
 
-  const resetCountdown = () => {
-    setIsCounting(false);
-    setSeconds(25 * 60); // Reset to 25 minutes
+  const timeCount = () => {
+    
+    setInterval(decrement,1000);
   };
-
-  const formatTime = () => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
   return (
-    <div>
-      <h1>{formatTime()}</h1>
-      <button
-        onClick={startCountdown}
-        style={{ backgroundColor: buttonColor, color: "white" }}
-      >
-        Start Countdown
-      </button>
-      <button onClick={resetCountdown} style={{ marginLeft: "10px" }}>
-        Reset
-      </button>
-    </div>
+        <ColorContainer count={count} setCount={setCount}> 
+      <h1>{Math.floor(count / 60)}:{(count % 60).toString().padStart(2, '0')}</h1>
+      <button onClick={timeCount}>Start counting</button>
+       </ColorContainer>
   );
 };
 
 export default Counter;
-
-
